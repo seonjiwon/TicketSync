@@ -37,6 +37,7 @@ public class Seat extends BaseEntity {
 
     private int price;
 
+    @Enumerated(value = EnumType.STRING)
     private SeatStatus status; // 좌석 상태
 
     @Builder

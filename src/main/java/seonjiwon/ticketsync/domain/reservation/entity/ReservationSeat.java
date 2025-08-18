@@ -1,16 +1,15 @@
 package seonjiwon.ticketsync.domain.reservation.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import seonjiwon.ticketsync.domain.performance.entity.Seat;
 
 @Entity
 @Table(name = "reservation_seats")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReservationSeat {
 
     @Id
@@ -28,18 +27,11 @@ public class ReservationSeat {
     @JoinColumn(name = "seat_id")
     private Seat seat;
 
-    @Builder
-    public ReservationSeat(Reservation reservation, Seat seat) {
-        setReservation(reservation);
-        setSeat(seat);
-    }
-
-    private void setReservation(Reservation reservation) {
-        this.reservation = reservation;
-    }
-
-    private void setSeat(Seat seat) {
-        this.seat = seat;
+    public static ReservationSeat create(Reservation reservation, Seat seat) {
+        return ReservationSeat.builder()
+                .reservation(reservation)
+                .seat(seat)
+                .build();
     }
 }
 

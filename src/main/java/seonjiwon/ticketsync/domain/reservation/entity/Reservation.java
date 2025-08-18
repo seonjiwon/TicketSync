@@ -1,10 +1,7 @@
 package seonjiwon.ticketsync.domain.reservation.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import seonjiwon.ticketsync.common.entity.BaseEntity;
 import seonjiwon.ticketsync.domain.performance.entity.Performance;
 import seonjiwon.ticketsync.domain.user.entity.User;
@@ -16,6 +13,8 @@ import java.util.List;
 @Table(name = "reservations")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Reservation extends BaseEntity {
 
     @Id
@@ -37,19 +36,20 @@ public class Reservation extends BaseEntity {
     @Column(name = "total_amount")
     private int totalAmount; // 총액
 
-    @Builder
-    public Reservation(User user, Performance performance, ReservationStatus status, int totalAmount) {
-        this.user = user;
-        this.performance = performance;
-        this.status = status;
-        this.totalAmount = totalAmount;
+    public static Reservation create(User user, Performance performance, int totalAmount) {
+        return Reservation.builder()
+                .user(user)
+                .performance(performance)
+                .status(ReservationStatus.PENDING)
+                .totalAmount(totalAmount)
+                .build();
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void complete(){
+        this.status = ReservationStatus.COMPLETED;
     }
 
-    public void setPerformance(Performance performance) {
-        this.performance = performance;
+    public void cancel(){
+        this.status = ReservationStatus.CANCELLED;
     }
 }

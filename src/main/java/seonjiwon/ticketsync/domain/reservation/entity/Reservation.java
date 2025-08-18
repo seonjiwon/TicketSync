@@ -37,9 +37,6 @@ public class Reservation extends BaseEntity {
     @Column(name = "total_amount")
     private int totalAmount; // 총액
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReservationSeat> reservationSeats = new ArrayList<>();
-
     @Builder
     public Reservation(User user, Performance performance, ReservationStatus status, int totalAmount) {
         this.user = user;
@@ -50,11 +47,9 @@ public class Reservation extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
-        user.getReservations().add(this);
     }
 
     public void setPerformance(Performance performance) {
         this.performance = performance;
-        performance.getReservations().add(this);
     }
 }

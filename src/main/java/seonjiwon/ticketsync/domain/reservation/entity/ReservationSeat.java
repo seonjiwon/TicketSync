@@ -36,12 +36,10 @@ public class ReservationSeat {
 
     private void setReservation(Reservation reservation) {
         this.reservation = reservation;
-        reservation.getReservationSeats().add(this);
     }
 
     private void setSeat(Seat seat) {
         this.seat = seat;
-        seat.getReservationSeats().add(this);
     }
 }
 

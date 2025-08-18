@@ -30,9 +30,6 @@ public class Performance extends BaseEntity {
     @Column(name = "performance_date")
     private LocalDateTime performanceDate;
 
-    @OneToMany(mappedBy = "performance")
-    private List<Reservation> reservations = new ArrayList<>();
-
     @Builder
     public Performance(String title, String venue, LocalDateTime performanceDate) {
         this.title = title;

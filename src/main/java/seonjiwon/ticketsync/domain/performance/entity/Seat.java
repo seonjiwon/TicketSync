@@ -22,6 +22,10 @@ public class Seat extends BaseEntity {
     @Column(name = "seat_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "performance_id")
+    private Performance performance;
+
     @Enumerated(value = EnumType.STRING)
     private Section section; // 구역(VIP/R/S)
 
@@ -34,10 +38,6 @@ public class Seat extends BaseEntity {
     private int price;
 
     private SeatStatus status; // 좌석 상태
-
-
-    @OneToMany(mappedBy = "seat", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReservationSeat> reservationSeats = new ArrayList<>();
 
     @Builder
     public Seat(Section section, int rowNo, int seatNo, int price, SeatStatus status) {

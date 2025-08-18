@@ -28,9 +28,6 @@ public class User extends BaseEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Reservation> reservations = new ArrayList<>();
-
     @Builder
     public User(String email, String password, String name) {
         this.email = email;

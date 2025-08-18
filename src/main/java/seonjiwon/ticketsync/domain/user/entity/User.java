@@ -1,10 +1,7 @@
 package seonjiwon.ticketsync.domain.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import seonjiwon.ticketsync.common.entity.BaseEntity;
 import seonjiwon.ticketsync.domain.reservation.entity.Reservation;
 
@@ -15,6 +12,8 @@ import java.util.List;
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Builder
+@AllArgsConstructor
 public class User extends BaseEntity {
 
     @Id
@@ -28,11 +27,4 @@ public class User extends BaseEntity {
     private String password;
 
     private String name;
-
-    @Builder
-    public User(String email, String password, String name) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-    }
 }

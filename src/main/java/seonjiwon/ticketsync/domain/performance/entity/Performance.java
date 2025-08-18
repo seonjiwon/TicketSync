@@ -1,21 +1,17 @@
 package seonjiwon.ticketsync.domain.performance.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import seonjiwon.ticketsync.common.entity.BaseEntity;
-import seonjiwon.ticketsync.domain.reservation.entity.Reservation;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "performances")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Builder
+@AllArgsConstructor
 public class Performance extends BaseEntity {
 
     @Id
@@ -29,11 +25,4 @@ public class Performance extends BaseEntity {
 
     @Column(name = "performance_date")
     private LocalDateTime performanceDate;
-
-    @Builder
-    public Performance(String title, String venue, LocalDateTime performanceDate) {
-        this.title = title;
-        this.venue = venue;
-        this.performanceDate = performanceDate;
-    }
 }

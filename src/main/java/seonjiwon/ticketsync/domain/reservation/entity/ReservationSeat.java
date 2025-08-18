@@ -9,7 +9,7 @@ import seonjiwon.ticketsync.domain.performance.entity.Seat;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class ReservationSeat {
 
     @Id
@@ -26,13 +26,6 @@ public class ReservationSeat {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id")
     private Seat seat;
-
-    public static ReservationSeat create(Reservation reservation, Seat seat) {
-        return ReservationSeat.builder()
-                .reservation(reservation)
-                .seat(seat)
-                .build();
-    }
 }
 
 

@@ -5,13 +5,12 @@ import lombok.*;
 import seonjiwon.ticketsync.common.entity.BaseEntity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "performances")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Builder
-@AllArgsConstructor
 public class Performance extends BaseEntity {
 
     @Id
@@ -23,6 +22,15 @@ public class Performance extends BaseEntity {
 
     private String venue; // 공연장
 
+    private String performanceCode = UUID.randomUUID().toString();
+
     @Column(name = "performance_date")
     private LocalDateTime performanceDate;
+
+    @Builder
+    public Performance(String title, String venue, LocalDateTime performanceDate) {
+        this.title = title;
+        this.venue = venue;
+        this.performanceDate = performanceDate;
+    }
 }

@@ -35,7 +35,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         // LoginFilter.successfulAuthentication 로 반환
-        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null);
+        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
     }
 
     @Override

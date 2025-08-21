@@ -8,23 +8,25 @@ import seonjiwon.ticketsync.common.CustomResponse;
 import seonjiwon.ticketsync.domain.performance.dto.PerformanceCreateRequest;
 import seonjiwon.ticketsync.domain.performance.dto.PerformanceListResponse;
 import seonjiwon.ticketsync.domain.performance.dto.PerformanceDetailResponse;
-import seonjiwon.ticketsync.domain.performance.service.PerformanceService;
+import seonjiwon.ticketsync.domain.performance.service.command.PerformanceCommandService;
+import seonjiwon.ticketsync.domain.performance.service.query.PerformanceQueryService;
 
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/performances")
 @RequiredArgsConstructor
 public class PerformanceController {
-    private final PerformanceService performanceService;
+
+    private final PerformanceCommandService performanceCommandService;
+    private final PerformanceQueryService performanceQueryService;
 
     @GetMapping
     public CustomResponse<PerformanceListResponse> getPerformances(
             @Parameter(description = "페이징을 위한 cursor 입니다.")
             @RequestParam(value = "cursor", required = false) String cursor
     ) {
-        PerformanceListResponse performanceListResponse = performanceService.getPerformances(cursor);
+        PerformanceListResponse performanceListResponse = performanceQueryService.getPerformances(cursor);
         return CustomResponse.onSuccess(performanceListResponse);
     }
 
@@ -34,7 +36,7 @@ public class PerformanceController {
             @Parameter(description = "공연 Id")
             @PathVariable(value = "performanceCode", required = true) String performanceCode
     ) {
-        PerformanceDetailResponse performanceDetailResponse = performanceService.getPerformanceDetail(performanceCode);
+        PerformanceDetailResponse performanceDetailResponse = performanceQueryService.getPerformanceDetail(performanceCode);
 
         return CustomResponse.onSuccess(performanceDetailResponse);
     }
@@ -44,7 +46,9 @@ public class PerformanceController {
             @RequestBody PerformanceCreateRequest performanceCreateRequest
 
     ) {
-        String performanceCode = performanceService.createPerformance(performanceCreateRequest);
+        String performanceCode = performanceCommandService.createPerformance(performanceCreateRequest);
         return CustomResponse.onSuccess(Map.of("performanceCode", performanceCode));
     }
+
+
 }

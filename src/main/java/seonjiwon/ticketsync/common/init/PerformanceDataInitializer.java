@@ -8,7 +8,7 @@ import seonjiwon.ticketsync.domain.performance.dto.PerformanceCreateRequest;
 import seonjiwon.ticketsync.domain.performance.dto.SectionConfig;
 import seonjiwon.ticketsync.domain.performance.entity.Section;
 import seonjiwon.ticketsync.domain.performance.repository.PerformanceRepository;
-import seonjiwon.ticketsync.domain.performance.service.PerformanceService;
+import seonjiwon.ticketsync.domain.performance.service.command.PerformanceCommandService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class PerformanceDataInitializer {
     private final PerformanceRepository performanceRepository;
-    private final PerformanceService performanceService;
+    private final PerformanceCommandService performanceService;
 
     @PostConstruct
     public void initPerformanceData() {

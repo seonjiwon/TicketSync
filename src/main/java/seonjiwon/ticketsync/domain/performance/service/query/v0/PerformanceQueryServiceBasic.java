@@ -1,4 +1,4 @@
-package seonjiwon.ticketsync.domain.performance.service.v0;
+package seonjiwon.ticketsync.domain.performance.service.query.v0;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,30 +7,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seonjiwon.ticketsync.common.exception.CustomException;
-import seonjiwon.ticketsync.domain.performance.dto.*;
+import seonjiwon.ticketsync.domain.performance.dto.PerformanceDetailResponse;
+import seonjiwon.ticketsync.domain.performance.dto.PerformanceDto;
+import seonjiwon.ticketsync.domain.performance.dto.PerformanceListResponse;
 import seonjiwon.ticketsync.domain.performance.entity.Performance;
-import seonjiwon.ticketsync.domain.performance.entity.Seat;
 import seonjiwon.ticketsync.domain.performance.entity.SeatStatus;
 import seonjiwon.ticketsync.domain.performance.exception.PerformanceErrorCode;
 import seonjiwon.ticketsync.domain.performance.repository.PerformanceRepository;
 import seonjiwon.ticketsync.domain.performance.repository.SeatRepository;
-import seonjiwon.ticketsync.domain.performance.service.PerformanceService;
+import seonjiwon.ticketsync.domain.performance.service.query.PerformanceQueryService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class PerformanceServiceBasic implements PerformanceService {
-
-    private static final int DEFAULT_PAGE_SIZE = 10;
-
+public class PerformanceQueryServiceBasic implements PerformanceQueryService {
     private final PerformanceRepository performanceRepository;
     private final SeatRepository seatRepository;
 
-
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     @Override
     public PerformanceListResponse getPerformances(String cursor) {
@@ -49,9 +47,9 @@ public class PerformanceServiceBasic implements PerformanceService {
             performances.remove(performances.size() - 1);
         }
 
-        List<PerformanceInfoDto> performanceInfos = new ArrayList<>();
+        List<PerformanceDto> performanceInfos = new ArrayList<>();
         for (Performance performance : performances) {
-            performanceInfos.add(PerformanceInfoDto.builder()
+            performanceInfos.add(PerformanceDto.builder()
                     .title(performance.getTitle())
                     .venue(performance.getVenue())
                     .performanceCode(performance.getPerformanceCode())
@@ -85,61 +83,4 @@ public class PerformanceServiceBasic implements PerformanceService {
                 .availableSeats(availableSeatCount)
                 .build();
     }
-
-    @Override
-    @Transactional
-    public String createPerformance(PerformanceCreateRequest request) {
-        log.info("공연 데이터 생성 시작...");
-        long startTime = System.currentTimeMillis();
-
-        Performance performance = convertRequestToPerformances(request);
-        createSeatsForPerformances(request, performance);
-
-        long endTime = System.currentTimeMillis();
-        log.info("공연 데이터 생성 완료. 소요시간: {}ms", endTime - startTime);
-
-        return performance.getPerformanceCode();
-    }
-
-    private Performance convertRequestToPerformances(PerformanceCreateRequest request) {
-        Performance performance = Performance.builder()
-                .title(request.getTitle())
-                .venue(request.getVenue())
-                .performanceDate(request.getPerformanceDate())
-                .build();
-
-        return performanceRepository.save(performance);
-    }
-
-    private void createSeatsForPerformances(PerformanceCreateRequest request, Performance performance) {
-
-        List<Seat> seats = request.getSectionConfigs().stream()
-                .map(config -> createSeatsForSection(performance, config))  // List<Seat> 반환
-                .flatMap(List::stream)  // List<Seat>들을 하나의 Stream<Seat>로 평탄화
-                .toList();
-
-        seatRepository.saveAll(seats);
-    }
-
-    private List<Seat> createSeatsForSection(Performance performance, SectionConfig config) {
-        List<Seat> seats = new ArrayList<>();
-
-        for (int rowNo = config.getStartRow(); rowNo <= config.getEndRow(); rowNo++) {
-            for (int seatNo = 1; seatNo <= config.getSeatsPerRow(); seatNo++) {
-                seats.add(Seat.builder()
-                        .performance(performance)
-                        .section(config.getSection())
-                        .rowNo(rowNo)
-                        .seatNo(seatNo)
-                        .price(config.getPrice())
-                        .status(SeatStatus.AVAILABLE)
-                        .build());
-            }
-        }
-
-        return seats;
-    }
-
-
 }
-

@@ -1,14 +1,9 @@
-package seonjiwon.ticketsync.domain.performance.service;
+package seonjiwon.ticketsync.domain.performance.service.command;
 
 import seonjiwon.ticketsync.domain.performance.dto.PerformanceDetailResponse;
 import seonjiwon.ticketsync.domain.performance.dto.PerformanceCreateRequest;
 import seonjiwon.ticketsync.domain.performance.dto.PerformanceListResponse;
 
-public interface PerformanceService {
-
-    PerformanceListResponse getPerformances(String cursor);
-
-    PerformanceDetailResponse getPerformanceDetail(String performanceCode);
-
+public interface PerformanceCommandService {
     String createPerformance(PerformanceCreateRequest request);
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import seonjiwon.ticketsync.common.entity.BaseEntity;
 import seonjiwon.ticketsync.domain.performance.entity.Performance;
+import seonjiwon.ticketsync.domain.performance.entity.Seat;
 import seonjiwon.ticketsync.domain.user.entity.User;
 
 import java.util.ArrayList;
@@ -37,11 +38,22 @@ public class Reservation extends BaseEntity {
     @Column(name = "total_amount")
     private int totalAmount; // 총액
 
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservationSeat> reservationSeats = new ArrayList<>();
+
     public void complete(){
         this.status = ReservationStatus.COMPLETED;
     }
 
     public void cancel(){
         this.status = ReservationStatus.CANCELLED;
+    }
+
+    public void addSeat(Seat seat) {
+        ReservationSeat reservationSeat = ReservationSeat.builder()
+                .reservation(this)
+                .seat(seat)
+                .build();
+        this.reservationSeats.add(reservationSeat);
     }
 }

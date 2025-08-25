@@ -38,4 +38,15 @@ public class Seat extends BaseEntity {
 
     @Enumerated(value = EnumType.STRING)
     private SeatStatus status; // 좌석 상태
+
+    public void reserve() {
+        if (this.status != SeatStatus.AVAILABLE) {
+            throw new IllegalStateException("이미 예매된 좌석입니다");
+        }
+        this.status = SeatStatus.RESERVED;
+    }
+
+    public void release() {
+        this.status = SeatStatus.AVAILABLE;
+    }
 }

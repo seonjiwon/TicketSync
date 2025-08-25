@@ -26,7 +26,7 @@ public class SeatConverter {
     public static SeatResponse toSeatResponse(Performance performance, List<Seat> seats) {
         // Section 별로 그룹화
         List<SeatDto> seatDtos = seats.stream()
-                .collect(Collectors.groupingBy(Seat::getSection))
+                .collect(Collectors.groupingBy(Seat::getSection)) // Map<Section, List<Seat>>
                 .entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(entry -> createSeatDto(entry.getKey(), entry.getValue()))

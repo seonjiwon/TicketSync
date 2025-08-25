@@ -6,6 +6,6 @@ import seonjiwon.ticketsync.domain.performance.dto.PerformanceListResponse;
 public interface PerformanceQueryService {
     PerformanceListResponse getPerformances(String cursor);
 
-    PerformanceDetailResponse getPerformanceDetail(String performanceCode);
+    PerformanceDetailResponse getPerformanceDetail(Long performanceId);
 
 }

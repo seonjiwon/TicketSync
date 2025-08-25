@@ -4,12 +4,16 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter
 @Builder
-public class PerformanceDto {
+@Getter
+public class SeatResponse {
     private Long performanceId;
     private String title;
     private String venue;
     private LocalDateTime performanceDate;
+
+    private List<SeatDto> sections;
+    private SummaryDto summary;
 }

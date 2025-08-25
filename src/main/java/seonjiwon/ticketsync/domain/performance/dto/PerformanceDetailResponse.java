@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class PerformanceDetailResponse {
+    private Long performanceId;
     private String title;
     private String venue;
-    private String performanceCode;
     private LocalDateTime performanceDate;
 
     private int availableSeats; // 이용 가능 좌석

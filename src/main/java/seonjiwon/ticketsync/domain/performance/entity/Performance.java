@@ -22,9 +22,6 @@ public class Performance extends BaseEntity {
 
     private String venue; // 공연장
 
-    @Column(name = "performance_code")
-    private String performanceCode = UUID.randomUUID().toString();
-
     @Column(name = "performance_date")
     private LocalDateTime performanceDate;
 

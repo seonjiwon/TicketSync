@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import seonjiwon.ticketsync.domain.performance.dto.*;
+import seonjiwon.ticketsync.domain.performance.converter.PerformanceConverter;
+import seonjiwon.ticketsync.domain.performance.converter.SeatConverter;
+import seonjiwon.ticketsync.domain.performance.dto.PerformanceCreateRequest;
+import seonjiwon.ticketsync.domain.performance.dto.SectionConfig;
 import seonjiwon.ticketsync.domain.performance.entity.Performance;
 import seonjiwon.ticketsync.domain.performance.entity.Seat;
-import seonjiwon.ticketsync.domain.performance.entity.SeatStatus;
 import seonjiwon.ticketsync.domain.performance.repository.PerformanceRepository;
 import seonjiwon.ticketsync.domain.performance.repository.SeatRepository;
 import seonjiwon.ticketsync.domain.performance.service.command.PerformanceCommandService;
@@ -26,7 +28,7 @@ public class PerformanceCommandServiceBasic implements PerformanceCommandService
 
 
     @Override
-    public String createPerformance(PerformanceCreateRequest request) {
+    public Long createPerformance(PerformanceCreateRequest request) {
         log.info("공연 데이터 생성 시작...");
         long startTime = System.currentTimeMillis();
 
@@ -36,16 +38,11 @@ public class PerformanceCommandServiceBasic implements PerformanceCommandService
         long endTime = System.currentTimeMillis();
         log.info("공연 데이터 생성 완료. 소요시간: {}ms", endTime - startTime);
 
-        return performance.getPerformanceCode();
+        return performance.getId();
     }
 
     private Performance convertRequestToPerformances(PerformanceCreateRequest request) {
-        Performance performance = Performance.builder()
-                .title(request.getTitle())
-                .venue(request.getVenue())
-                .performanceDate(request.getPerformanceDate())
-                .build();
-
+        Performance performance = PerformanceConverter.of(request);
         return performanceRepository.save(performance);
     }
 
@@ -64,20 +61,10 @@ public class PerformanceCommandServiceBasic implements PerformanceCommandService
 
         for (int rowNo = config.getStartRow(); rowNo <= config.getEndRow(); rowNo++) {
             for (int seatNo = 1; seatNo <= config.getSeatsPerRow(); seatNo++) {
-                seats.add(Seat.builder()
-                        .performance(performance)
-                        .section(config.getSection())
-                        .rowNo(rowNo)
-                        .seatNo(seatNo)
-                        .price(config.getPrice())
-                        .status(SeatStatus.AVAILABLE)
-                        .build());
+                seats.add(SeatConverter.of(performance, config, rowNo, seatNo));
             }
         }
-
         return seats;
     }
-
-
 }
 

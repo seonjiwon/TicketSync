@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seonjiwon.ticketsync.common.exception.CustomException;
+import seonjiwon.ticketsync.domain.performance.converter.PerformanceConverter;
 import seonjiwon.ticketsync.domain.performance.dto.PerformanceDetailResponse;
 import seonjiwon.ticketsync.domain.performance.dto.PerformanceDto;
 import seonjiwon.ticketsync.domain.performance.dto.PerformanceListResponse;
@@ -17,7 +18,7 @@ import seonjiwon.ticketsync.domain.performance.repository.PerformanceRepository;
 import seonjiwon.ticketsync.domain.performance.repository.SeatRepository;
 import seonjiwon.ticketsync.domain.performance.service.query.PerformanceQueryService;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,52 +36,44 @@ public class PerformanceQueryServiceBasic implements PerformanceQueryService {
         Pageable pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE + 1);
         List<Performance> performances;
 
-        if (cursor == null || cursor.isEmpty()) {
-            performances = performanceRepository.findByCursorDefault(pageable);
-        } else {
-            performances = performanceRepository.findByCursor(Long.parseLong(cursor), pageable);
-        }
+        // Cursor 페이징으로 Performance 가져오기
+        performances = getPerformancesWithCursorPaging(cursor, pageable);
 
         // 추가로 불러온 마지막 제거
         boolean hasMore = performances.size() > DEFAULT_PAGE_SIZE;
         if (hasMore) {
             performances.remove(performances.size() - 1);
         }
+        LocalDateTime nextCursor = hasMore ? performances.get(performances.size() - 1).getCreatedAt() : null;
 
-        List<PerformanceDto> performanceInfos = new ArrayList<>();
-        for (Performance performance : performances) {
-            performanceInfos.add(PerformanceDto.builder()
-                    .title(performance.getTitle())
-                    .venue(performance.getVenue())
-                    .performanceCode(performance.getPerformanceCode())
-                    .performanceDate(performance.getPerformanceDate())
-                    .build());
-        }
 
-        String nextCursor = hasMore ? performances.get(performances.size() - 1).getId().toString() : null;
+        List<PerformanceDto> performanceDtos = performances.stream()
+                .map(PerformanceConverter::toPerformanceDto)
+                .toList();
 
-        return PerformanceListResponse.builder()
-                .performanceInfos(performanceInfos)
-                .nextCursor(nextCursor)
-                .build();
+        return PerformanceConverter.toPerformanceListResponse(performanceDtos, nextCursor);
     }
 
     @Override
-    public PerformanceDetailResponse getPerformanceDetail(String performanceCode) {
-        log.info("공연 단건 조회를 시작합니다. performanceCode: {}", performanceCode);
-        Performance performance = performanceRepository.findByPerformanceCode(performanceCode)
+    public PerformanceDetailResponse getPerformanceDetail(Long performanceId) {
+        log.info("공연 단건 조회를 시작합니다. performanceCode: {}", performanceId);
+
+        Performance performance = performanceRepository.findById(performanceId)
                 .orElseThrow(() -> new CustomException(PerformanceErrorCode.PERFORMANCE_NOT_FOUND));
 
         int totalSeatCount = seatRepository.countByPerformance(performance);
         int availableSeatCount = seatRepository.countByPerformanceAndStatus(performance, SeatStatus.AVAILABLE);
 
-        return PerformanceDetailResponse.builder()
-                .title(performance.getTitle())
-                .venue(performance.getVenue())
-                .performanceCode(performanceCode)
-                .performanceDate(performance.getPerformanceDate())
-                .totalSeats(totalSeatCount)
-                .availableSeats(availableSeatCount)
-                .build();
+        return PerformanceConverter.toPerformanceDetailResponse(performance, totalSeatCount, availableSeatCount);
+    }
+
+    private List<Performance> getPerformancesWithCursorPaging(String cursor, Pageable pageable) {
+        List<Performance> performances;
+        if (cursor == null || cursor.isEmpty()) {
+            performances = performanceRepository.findByCursorDefault(pageable);
+        } else {
+            performances = performanceRepository.findByCursor(LocalDateTime.parse(cursor), pageable);
+        }
+        return performances;
     }
 }

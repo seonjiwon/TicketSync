@@ -5,5 +5,5 @@ import seonjiwon.ticketsync.domain.performance.dto.PerformanceCreateRequest;
 import seonjiwon.ticketsync.domain.performance.dto.PerformanceListResponse;
 
 public interface PerformanceCommandService {
-    String createPerformance(PerformanceCreateRequest request);
+    Long createPerformance(PerformanceCreateRequest request);
 }

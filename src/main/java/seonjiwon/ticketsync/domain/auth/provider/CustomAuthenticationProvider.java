@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import seonjiwon.ticketsync.common.exception.CustomException;
 import seonjiwon.ticketsync.domain.auth.dto.CustomUserDetails;
 import seonjiwon.ticketsync.domain.auth.service.CustomUserDetailsService;
-import seonjiwon.ticketsync.domain.user.exception.UserErrorCode;
+import seonjiwon.ticketsync.domain.user.code.UserErrorCode;
 
 @Component
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         // LoginFilter.successfulAuthentication 로 반환
-        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null);
+        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package seonjiwon.ticketsync.domain.user.exception;
+package seonjiwon.ticketsync.domain.performance.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,10 +7,9 @@ import seonjiwon.ticketsync.common.code.error.BaseErrorCode;
 
 @Getter
 @AllArgsConstructor
-public enum UserErrorCode implements BaseErrorCode {
+public enum SeatErrorCode implements BaseErrorCode {
 
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "사용자를 찾을 수 없습니다."),
-    PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "USER400", "비밀번호가 일치하지 않습니다.")
+    SEAT_NOT_FOUND(HttpStatus.NOT_FOUND, "SEAT404", "공연 좌석을 찾을 수 없습니다.")
 
     ;
 

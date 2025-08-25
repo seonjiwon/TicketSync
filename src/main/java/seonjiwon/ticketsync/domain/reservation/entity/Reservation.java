@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class Reservation extends BaseEntity {
 
     @Id
@@ -30,20 +30,12 @@ public class Reservation extends BaseEntity {
     @JoinColumn(name = "performance_id")
     private Performance performance;
 
+    @Builder.Default
     @Enumerated(value = EnumType.STRING)
-    private ReservationStatus status; // 현재 상태
+    private ReservationStatus status = ReservationStatus.PENDING; // 현재 상태
 
     @Column(name = "total_amount")
     private int totalAmount; // 총액
-
-    public static Reservation create(User user, Performance performance, int totalAmount) {
-        return Reservation.builder()
-                .user(user)
-                .performance(performance)
-                .status(ReservationStatus.PENDING)
-                .totalAmount(totalAmount)
-                .build();
-    }
 
     public void complete(){
         this.status = ReservationStatus.COMPLETED;

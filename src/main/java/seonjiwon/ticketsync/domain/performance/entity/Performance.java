@@ -1,16 +1,11 @@
 package seonjiwon.ticketsync.domain.performance.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import seonjiwon.ticketsync.common.entity.BaseEntity;
-import seonjiwon.ticketsync.domain.reservation.entity.Reservation;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "performances")

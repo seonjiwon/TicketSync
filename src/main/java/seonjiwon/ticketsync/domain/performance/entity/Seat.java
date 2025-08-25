@@ -1,10 +1,7 @@
 package seonjiwon.ticketsync.domain.performance.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import seonjiwon.ticketsync.common.entity.BaseEntity;
 import seonjiwon.ticketsync.domain.reservation.entity.ReservationSeat;
 
@@ -15,6 +12,8 @@ import java.util.List;
 @Table(name = "seats")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@AllArgsConstructor
+@Builder
 public class Seat extends BaseEntity {
 
     @Id
@@ -39,13 +38,4 @@ public class Seat extends BaseEntity {
 
     @Enumerated(value = EnumType.STRING)
     private SeatStatus status; // 좌석 상태
-
-    @Builder
-    public Seat(Section section, int rowNo, int seatNo, int price, SeatStatus status) {
-        this.section = section;
-        this.rowNo = rowNo;
-        this.seatNo = seatNo;
-        this.price = price;
-        this.status = status;
-    }
 }
